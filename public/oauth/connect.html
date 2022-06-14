@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/vincall.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Vincall manage system" />
+    <title>Vin Call</title>
+  </head>
+  <body>
+    <div>Connecting ...</div>
+    <div id="error-msg"></div>
+    <script src="./util.js"></script>
+    <script>
+      var search = getSearch(),
+        success = search.success,
+        errMsg = search.errMsg;
+
+      if (window.opener && window.opener.__refreshComm100Connect) {
+        window.opener.__refreshComm100Connect(!errMsg);
+      }
+      if (errMsg) {
+        document.getElementById("error-msg").innerText = errMsg;
+        setTimeout(() => {
+          window.close();
+        }, 10000);
+      } else {
+        setTimeout(() => {
+          window.close();
+        }, 1500);
+      }
+    </script>
+  </body>
+</html>
