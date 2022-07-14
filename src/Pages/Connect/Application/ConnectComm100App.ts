@@ -1,17 +1,18 @@
+import { useRef } from "react";
 import { getServerURL } from "../../../App";
 import { customHttpClient } from "../../../DataProvider/customHttpClient";
 import { EnvConfig } from "../../../EnvConfig";
-import { ConnectInfo } from "./ConnectPageApp";
 
 export interface ConnectComm100AppProps {
   setConnected: any;
-  triggerPageRefresh: (connected?: boolean) => void;
-  connectInfo: ConnectInfo;
+  triggerPageRefresh: any;
+  connectInfo: any;
 }
 
 export interface ConnectComm100ButtonApp {
-  handleConnect: (values: { siteId: string }) => void;
+  handleConnect: (values: any) => void;
   handleDisconnect: () => void;
+  ref: any;
 }
 
 export const connectComm100App = ({
@@ -19,7 +20,9 @@ export const connectComm100App = ({
   triggerPageRefresh,
   connectInfo,
 }: ConnectComm100AppProps): ConnectComm100ButtonApp => {
-  const handleConnect = (values: { siteId: string }) => {
+  const ref = useRef();
+
+  const handleConnect = (values: any) => {
     const siteId = values.siteId;
     localStorage.setItem("connectSiteId", siteId || "");
     const redirect_url = `${EnvConfig.serverUrl}/sso/connectcallback?siteId=${siteId}&domain=${connectInfo.domain}`;
@@ -61,5 +64,6 @@ export const connectComm100App = ({
   return {
     handleConnect,
     handleDisconnect,
+    ref,
   };
 };

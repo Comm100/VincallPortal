@@ -16,6 +16,8 @@ function onlogin(search) {
 }
 
 window.__server_url =
-  location.host === "wwwtest.vincall.net"
+  location.host === "www.vincall.net"
+    ? "https://api.vincall.net"
+    : location.host === "wwwtest.vincall.net"
     ? "https://apitest.vincall.net"
     : "https://apivincall.comm100dev.io";

@@ -1,14 +1,24 @@
-import { APPAPI } from "comm100-app/type";
 import { notification } from "../Helpers/Index";
-import { checkIfAgentFree } from "./comm100Runtime";
 import { RuntimeInterface } from "./index";
 
-const getAppClient = (): APPAPI => {
+const getAppClient = (): any => {
   // @ts-ignore
   return window.__comm100_client;
 };
 
-const noop = () => {};
+export const checkIfAgentFree = (
+  clientInstance: any,
+  runtime: RuntimeInterface
+) => {
+  clientInstance.get("currentAgent").then((agent: any) => {
+    console.log("Ray: currentAgent", agent);
+    if ((agent.data || agent).chats <= 0) {
+      if (runtime.eventHandler.free) {
+        runtime.eventHandler.free();
+      }
+    }
+  });
+};
 
 export const defaultRuntime = {
   eventHandler: {},
@@ -26,21 +36,21 @@ export const defaultRuntime = {
       console.log("Ray: agentconsole.navBar.select", leftTab);
     });
 
-    client.on("agentconsole.chat.request", (args: any) => {
-      console.log("Ray: agentconsole.chat.request", args);
+    client.on("agentconsole.livechat.chat.request", (args: any) => {
+      console.log("Ray: agentconsole.livechat.chat.request", args);
       notification("New chat comes");
     });
 
-    client.on("agentconsole.chats.chatStarted", (args: any) => {
-      console.log("Ray: chatStarted", args);
+    client.on("agentconsole.livechat.chats.chatStarted", (args: any) => {
+      console.log("Ray: agentconsole.livechat.chats.chatStarted", args);
       if (this.eventHandler.busy) {
         this.eventHandler.busy();
       }
       notification("Chat starts.");
     });
 
-    client.on("agentconsole.chats.chatEnded", (args: any) => {
-      console.log("Ray: chatEnded", args);
+    client.on("agentconsole.livechat.chats.chatEnded", (args: any) => {
+      console.log("Ray: agentconsole.livechat.chats.chatEnded", args);
       checkIfAgentFree(client, this);
       notification("Chat ends.");
     });
@@ -52,6 +62,5 @@ export const defaultRuntime = {
       return;
     }
     client.set("currentAgent.status", status);
-  },
-  updateTopbarStatus: noop,
+  }
 } as RuntimeInterface;

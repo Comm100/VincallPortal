@@ -8,12 +8,16 @@
     <title>Vin Call</title>
   </head>
   <body>
-    <div>Redirect....</div>
+    <div id="msg-info">Redirect....</div>
     <script src="./util.js"></script>
     <script>
       var search = getSearch();
-      onlogin(search);
-      location.href = "/#/callpanel";
+      if (search.errMsg) {
+        document.getElementById("msg-info").innerText = search.errMsg;
+      } else {
+        onlogin(search);
+        location.href = "/#/callpanel";
+      }
     </script>
   </body>
 </html>

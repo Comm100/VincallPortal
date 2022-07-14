@@ -1,16 +1,15 @@
 import { Button, Typography } from "@mui/material";
 import { TextField } from "@mui/material";
-import { Form, Formik } from 'formik';
-import { FormErrorMessageStyled  } from "../../StyledComponents/FormErrorMessageStyled";
+import { Form, Formik } from "formik";
+import { FormErrorMessageStyled } from "../../StyledComponents/FormErrorMessageStyled";
 import { connectComm100App } from "./Application/ConnectComm100App";
 import * as Yup from "yup";
-import { ConnectInfo } from "./Application/ConnectPageApp";
 
 export interface ConnectComm100Props {
   connected: boolean;
-  setConnected: (c: boolean) => void;
-  triggerPageRefresh: (connected?: boolean) => void;
-  connectInfo: ConnectInfo;
+  setConnected: any;
+  triggerPageRefresh: any;
+  connectInfo: any;
 }
 
 const validateSchema = Yup.object().shape({
@@ -23,7 +22,7 @@ export const ConnectComm100 = ({
   triggerPageRefresh,
   connectInfo,
 }: ConnectComm100Props) => {
-  const { handleConnect, handleDisconnect } = connectComm100App({
+  const { handleConnect, handleDisconnect, ref } = connectComm100App({
     setConnected,
     triggerPageRefresh,
     connectInfo,
@@ -36,7 +35,7 @@ export const ConnectComm100 = ({
           <Typography>You are already connected.</Typography>
           <Typography>
             Connected Site ID:{" "}
-            {localStorage.getItem("connectSiteId")}
+            {localStorage.getItem("connectSiteId") || ref.current}
           </Typography>
           <Button variant="contained" onClick={handleDisconnect}>
             Disconnect Comm100
@@ -58,11 +57,11 @@ export const ConnectComm100 = ({
             {({ errors, setFieldValue }) => {
               return (
                 <Form>
-                  <TextField 
+                  <TextField
                     id="siteId"
                     label="Site ID"
                     sx={{ width: 300 }}
-                    onChange={(event) => 
+                    onChange={(event) =>
                       setFieldValue("siteId", event.target.value || "")
                     }
                     error={!!errors.siteId}

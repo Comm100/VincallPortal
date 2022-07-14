@@ -1,6 +1,7 @@
 import { AuthProvider } from "react-admin";
 import { getServerURL } from "../App";
 import { customHttpClient } from "../DataProvider/customHttpClient";
+import { isEmbeddedMode } from "../Helpers/Index";
 
 export interface Auth {
   username: string;
@@ -48,6 +49,10 @@ export const authProvider: AuthProvider = {
       localStorage.removeItem("userId");
       localStorage.removeItem("vincallRole");
       localStorage.removeItem("userAccount");
+      if (isEmbeddedMode) {
+        goToOauth();
+        return Promise.resolve() as any;
+      }
       return Promise.reject("Please login again.");
     }
     return Promise.resolve();
@@ -64,3 +69,28 @@ export const authProvider: AuthProvider = {
     return Promise.resolve(localStorage.getItem("vincallRole"));
   },
 };
+
+const goToOauth = () => {
+  const search = getSearch() as any;
+  const query = `domain=${search.domain}&siteId=${search.siteId}`;
+  const entryUrl = location.href;
+  const domain = location.protocol + "//" + location.host;
+  if (entryUrl.indexOf("#/reports") !== -1) {
+    location.href = `/oauth/login?returnuri=${domain}/oauth/logonreports&${query}`;
+  } else if (entryUrl.indexOf("#/phoneDialer") !== -1) {
+    location.href = `/oauth/login?returnuri=${domain}/oauth/logonphonedialer&${query}`;
+  } else {
+    location.href = `/oauth/login?returnuri=${domain}/oauth/logoncallpanel&${query}`;
+  }
+};
+
+function getSearch() {
+  var search = decodeURIComponent(location.href).split("?")[1] || "",
+    searchList = search.split("&").map((item) => item.split("=")) || [],
+    searchObject = searchList.reduce((pre, current) => {
+      // @ts-ignore
+      pre[current[0]] = current[1];
+      return pre;
+    }, {});
+  return searchObject;
+}

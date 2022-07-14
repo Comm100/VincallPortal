@@ -4,11 +4,6 @@ import { customHttpClient } from "../../../DataProvider/customHttpClient";
 import { useStore } from "react-admin";
 import { useEventCallback } from "@mui/material";
 
-export interface ConnectInfo {
-  clientId: string;
-  domain: string;
-}
-
 export interface ConnectPageAppProps {}
 
 export interface ConnectPageApp {
@@ -16,7 +11,7 @@ export interface ConnectPageApp {
   setIsComm100Connect: any;
   shouldPageRefresh: boolean;
   refresh: number;
-  connectInfo: ConnectInfo;
+  connectInfo: any;
   handleRefresh: () => void;
   triggerPageRefresh: (connected?: boolean) => void;
   handleCheckOauth: () => void;

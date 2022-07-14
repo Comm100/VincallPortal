@@ -19,7 +19,7 @@ const format = (time: number): string => {
   if (!time) {
     return "00";
   }
-  if (time < 9) {
+  if (time <= 9) {
     return `0${time}`;
   }
   return String(time);
@@ -32,7 +32,7 @@ export const notification = (message: string) => {
   }
   if (Notification.permission === "granted") {
     const instance = new Notification("Vin Call", {
-      body: message,
+      body: message
     });
     return;
   }
@@ -40,7 +40,7 @@ export const notification = (message: string) => {
     Notification.requestPermission().then((p) => {
       if (p === "granted") {
         const instance = new Notification("Vin Call", {
-          body: message,
+          body: message
         });
       }
     });

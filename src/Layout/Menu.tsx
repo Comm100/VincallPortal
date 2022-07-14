@@ -10,6 +10,7 @@ import { MenuProps, useSidebarState, useStore } from "react-admin";
 import { CMenuItem } from "./CMenuItem";
 import { useCheckPermission, PermissionEnums } from "../Helpers/Permission";
 import { useState } from "react";
+import { CSubMenu } from "./CSubMenu";
 import { Comm100Icon } from "../Assets/Comm100Icon";
 
 const menuItems = [

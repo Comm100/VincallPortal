@@ -3,15 +3,11 @@ import { Form, required, TextInput, useTranslate } from "react-admin";
 import Box from "@mui/material/Box";
 import Logo from "../../Assets/vincall.svg";
 import { loginApp } from "./LoginApp";
-import { isEmbeddedMode } from "../../Helpers/Index";
 
 export const Login = () => {
   const translate = useTranslate();
   const { loading, handleSubmit } = loginApp({});
-  if (isEmbeddedMode) {
-    goToOauth();
-    return null;
-  }
+
   return (
     <Form onSubmit={handleSubmit} noValidate>
       <Box
@@ -88,17 +84,4 @@ export const Login = () => {
       </Box>
     </Form>
   );
-};
-
-const goToOauth = () => {
-  // @ts-ignore
-  const entryUrl = window.__entryUrl;
-  const domain = location.protocol + "//" + location.host;
-  if (entryUrl.indexOf("#/reports") !== -1) {
-    location.href = `/oauth/login?returnuri=${domain}/oauth/logonreports`;
-  } else if (entryUrl.indexOf("#/phoneDialer") !== -1) {
-    location.href = `/oauth/login?returnuri=${domain}/oauth/logonphonedialer`;
-  } else {
-    location.href = `/oauth/login?returnuri=${domain}/oauth/logoncallpanel`;
-  }
 };

@@ -39,7 +39,7 @@ const install = (arg: GlobalSettings, elementId: string, siteId: number) => {
   let s2: any;
 
   const s = document.createElement("script");
-  s.src = `${arg.agentConsole}/sdk/comm100-embeddable-sdk/`;
+  s.src = arg.agentConsole;
   s.async = true;
   s.onload = () => {
     s2 = document.createElement("script");

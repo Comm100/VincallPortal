@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: vincallportal
+  namespace: NAMESPACE
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 90m
+spec:
+  tls:
+    - hosts:
+        - wwwtest.vincall.net
+      secretName: www.vincall.net
+  rules:
+    - host: wwwtest.vincall.net
+      http:
+        paths:
+          - path: /(.*)
+            backend:
+              serviceName: vincallportal
+              servicePort: 80

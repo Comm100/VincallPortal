@@ -3,7 +3,7 @@ import {
   DataProvider,
   useDataProvider,
   useGetIdentity,
-  useGetList,
+  useGetList
 } from "react-admin";
 import { useEventCallback } from "@mui/material";
 import { log } from "../../Helpers/Index";
@@ -11,8 +11,9 @@ import { ChangeEvent } from "../../types";
 import { AgentBo } from "./CallPanelPage";
 import { DeviceManager } from "./DeviceManager";
 import { AgentCallStatus, DeviceState } from "./types";
-import { Runtime } from "../../Runtime/index";
 import { Comm100ChatStatus } from "./AgentCallStatusIcon";
+import { Runtime } from "../../Runtime";
+import { transferMessage } from "../../Helpers/TransferMessage";
 
 export const callPanelPageApp = ({ whichPage }: { whichPage?: string }) => {
   const [currentAgentId, setCurrentAgentId] = useState<string>("");
@@ -25,20 +26,21 @@ export const callPanelPageApp = ({ whichPage }: { whichPage?: string }) => {
   const [agentStatus, setAgentStatus] = useState<AgentCallStatus>("Available");
   const [chatStatus, setChatStatus] = useState<Comm100ChatStatus>("Online");
 
-  const { data: agentList = [], isLoading: isAgentLoading } =
-    useGetList<AgentBo>(
-      "agents",
-      {
-        pagination: null as any,
-      },
-      {
-        refetchInterval: -1,
-        retry: 1,
-      }
-    );
+  const { data: agentList = [], isLoading: isAgentLoading } = useGetList<
+    AgentBo
+  >(
+    "agents",
+    {
+      pagination: null as any
+    },
+    {
+      refetchInterval: -1,
+      retry: 1
+    }
+  );
 
   const [deviceState, setDeviceState] = useState<DeviceState>({
-    status: "initializing",
+    status: "initializing"
   });
 
   const currentAgentObject = useGetCurrentAgentObject(
@@ -78,13 +80,16 @@ export const callPanelPageApp = ({ whichPage }: { whichPage?: string }) => {
 
   const handleUpdateDeviceState = useEventCallback(
     (state: Partial<DeviceState>, shouldUseAssign?: boolean) => {
-      if (shouldUseAssign) {
-        setDeviceState(Object.assign({}, deviceState, state));
-      } else {
-        setDeviceState(state as any);
-      }
+      const updatedDeviceState = shouldUseAssign
+        ? Object.assign({}, deviceState, state)
+        : (state as any);
 
-      if (state.status === "ready") {
+      transferMessage("deviceStatus", {
+        type: updatedDeviceState.status,
+        message: updatedDeviceState
+      });
+      setDeviceState(updatedDeviceState);
+      if (updatedDeviceState.status === "ready") {
         log("Ray: handleUpdateDeviceState ready");
         setAgentStatus("Available");
         if (currentAgentObject && identity) {
@@ -94,28 +99,21 @@ export const callPanelPageApp = ({ whichPage }: { whichPage?: string }) => {
             clearCallTimeTask();
           }
         }
-      } else if (state.status === "incoming") {
+      } else if (updatedDeviceState.status === "incoming") {
         // Agent is in a call.
-        Runtime.sendNotify(`${state.from} is calling.`);
+        Runtime.sendNotify(`${updatedDeviceState.from} is calling.`);
       } else if (
-        state.status === "incomingAccept" ||
-        state.status === "outingCallingAccept"
+        updatedDeviceState.status === "incomingAccept" ||
+        updatedDeviceState.status === "outingCallingAccept"
       ) {
         setAgentStatus("On Call");
         setChatStatus("Away");
         Runtime.updateAgentStatus("away");
-        if (whichPage === "callpanel") {
-          Runtime.updateTopbarStatus("Do not disturb");
-        }
-      } else if (state.status === "end") {
+      } else if (updatedDeviceState.status === "end") {
         requestForUpdateStatusToOnline();
-        // Agent is out of a call.
-        Runtime.updateAgentStatus("online");
         setChatStatus("Online");
         setAgentStatus("Available");
-        if (whichPage === "callpanel") {
-          Runtime.updateTopbarStatus("Available");
-        }
+        Runtime.updateAgentStatus("online");
       }
     }
   );
@@ -151,7 +149,7 @@ export const callPanelPageApp = ({ whichPage }: { whichPage?: string }) => {
       deviceManager.current = new DeviceManager({
         token: tokenResponse.data.token,
         identity: tokenResponse.data.identity,
-        updateState: handleUpdateDeviceState,
+        updateState: handleUpdateDeviceState
       });
       deviceManager.current.catch((e: any) => {
         log("Device error", e);
@@ -190,7 +188,7 @@ export const callPanelPageApp = ({ whichPage }: { whichPage?: string }) => {
     clearCallTimeTask,
     disableCallWhenAgentBusy,
     enableCallWhenAgentFree,
-    handleCall,
+    handleCall
   };
 };
 

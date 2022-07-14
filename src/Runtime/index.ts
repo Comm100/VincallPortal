@@ -14,7 +14,6 @@ export interface RuntimeInterface {
   init: () => void;
   sendNotify: (message: string) => void;
   updateAgentStatus: (status: "online" | "away") => void;
-  updateTopbarStatus: (status: AgentCallStatus) => void;
   on: (eventName: "busy" | "free", callback: () => void) => RuntimeInterface;
 }
 

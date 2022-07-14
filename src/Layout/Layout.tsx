@@ -1,6 +1,7 @@
 import { Layout as AdminLayout, LayoutProps } from "react-admin";
 import { isEmbeddedMode } from "../Helpers/Index";
 import AppBar from "./AppBar";
+import { CustomMenu } from "./CustomMenu";
 import Menu from "./Menu";
 import { CssBaseline, Container } from "@mui/material";
 import { ErrorBoundary } from "react-error-boundary";

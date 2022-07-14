@@ -24,7 +24,7 @@ function getInstall(entry: string) {
     let s2: any;
 
     const s = document.createElement("script");
-    s.src = `${arg.controlPanel}/sdk/comm100-embeddable-sdk/`;
+    s.src = arg.controlPanel;
     s.async = true;
     s.onload = () => {
       s2 = document.createElement("script");

@@ -144,13 +144,11 @@ export const dataProvider = (
   },
 
   update: (resource, params) =>
-  // To accommodate backend APIs, resource here will remove the last s and be singular
     httpClient(`${apiUrl}/${resource.slice(0, -1)}/${params.id}`, {
       method: "PATCH",
       body: JSON.stringify(params.data),
     }).then(({ json }) => ({ data: json })),
 
-  // custom, request method is PATCH
   updatePatch: (resource: string, params: { [key: string]: string }) =>
     httpClient(`${apiUrl}/${resource}/${params.id}`, {
       method: "PATCH",
@@ -169,7 +167,6 @@ export const dataProvider = (
     ).then((responses) => ({ data: responses.map(({ json }) => json.id) })),
 
   create: (resource, params) =>
-   // To accommodate backend APIs, resource here will remove the last s and be singular
     httpClient(`${apiUrl}/${resource.slice(0, -1)}`, {
       method: "POST",
       body: JSON.stringify(params.data),
@@ -178,7 +175,6 @@ export const dataProvider = (
     })),
 
   delete: (resource, params) =>
-   // To accommodate backend APIs, resource here will remove the last s and be singular
     httpClient(`${apiUrl}/${resource.slice(0, -1)}/${params.id}`, {
       method: "DELETE",
       headers: new Headers({
@@ -190,7 +186,6 @@ export const dataProvider = (
   deleteMany: (resource, params) =>
     Promise.all(
       params.ids.map((id) =>
-       // To accommodate backend APIs, resource here will remove the last s and be singular
         httpClient(`${apiUrl}/${resource.slice(0, -1)}/${id}`, {
           method: "DELETE",
           headers: new Headers({
@@ -198,11 +193,11 @@ export const dataProvider = (
           }),
         })
       )
-    ).then(() => ({
+    ).then((responses) => ({
+      // data: responses.map(({ json }) => json.id),
       data: [],
     })),
 
-  // custom
   httpGet(resource: string, params: { [key: string]: string }, options = {}) {
     const url = `${apiUrl}/${resource}?${stringify(params)}`;
     return httpClient(url, options).then(({ headers, json }) => {
@@ -212,7 +207,6 @@ export const dataProvider = (
     });
   },
 
-  // custom, for updating user password
   updatePassword: (resource: string, params: { [key: string]: string }) =>
     httpClient(`${apiUrl}/${resource}/${params.id}`, {
       method: "PATCH",

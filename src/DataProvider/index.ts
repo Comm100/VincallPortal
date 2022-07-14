@@ -4,6 +4,7 @@ import { dataProvider } from "./dataProvider";
 import { restDataProviderFactory } from "./rest";
 
 export const dataProviderFactory = (serverURL: string) => {
+  // @ts-ignore
   if (!EnvConfig.useMockServer) {
     // Truly data provider.
     return dataProvider(serverURL);
